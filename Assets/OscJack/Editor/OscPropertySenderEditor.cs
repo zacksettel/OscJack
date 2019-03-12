@@ -15,6 +15,7 @@ namespace OscJack
     {
         #region Editable properties
 
+        SerializedProperty _txSymbol;
         SerializedProperty _ipAddress;
         SerializedProperty _udpPort;
         SerializedProperty _oscAddress;
@@ -28,6 +29,7 @@ namespace OscJack
 
         static class Labels
         {
+            public static readonly GUIContent UDPtxSymbol = new GUIContent("TX Symbol");
             public static readonly GUIContent IPAddress = new GUIContent("IP Address");
             public static readonly GUIContent UDPPortNumber = new GUIContent("UDP Port Number");
             public static readonly GUIContent OSCAddress = new GUIContent("OSC Address");
@@ -39,18 +41,35 @@ namespace OscJack
 
         void OnEnable()
         {
-            _ipAddress    = serializedObject.FindProperty("_ipAddress");
-            _udpPort      = serializedObject.FindProperty("_udpPort");
-            _oscAddress   = serializedObject.FindProperty("_oscAddress");
-            _dataSource   = serializedObject.FindProperty("_dataSource");
+            _txSymbol = serializedObject.FindProperty("_txSymbol");
+            _ipAddress = serializedObject.FindProperty("_ipAddress");
+            _udpPort = serializedObject.FindProperty("_udpPort");
+            _oscAddress = serializedObject.FindProperty("_oscAddress");
+            _dataSource = serializedObject.FindProperty("_dataSource");
             _propertyName = serializedObject.FindProperty("_propertyName");
-            _keepSending  = serializedObject.FindProperty("_keepSending");
+            _keepSending = serializedObject.FindProperty("_keepSending");
+
+            if (OscTXmap.allTXmaps != null)
+            {
+                foreach (OscTXmap.TXmap tm in OscTXmap.allTXmaps)
+                {
+                    if (_txSymbol.stringValue == tm.txSymbol)
+                    {
+                        _udpPort.intValue = tm.portNumber;
+                        _ipAddress.stringValue = tm.address;
+                        serializedObject.ApplyModifiedProperties();
+                        break;
+                    }
+                }
+            }
         }
+
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
+            EditorGUILayout.DelayedTextField(_txSymbol, Labels.UDPtxSymbol);
             EditorGUILayout.DelayedTextField(_ipAddress, Labels.IPAddress);
             EditorGUILayout.DelayedIntField(_udpPort, Labels.UDPPortNumber);
             EditorGUILayout.PropertyField(_oscAddress, Labels.OSCAddress);
@@ -136,7 +155,7 @@ namespace OscJack
         Type _cachedType;
 
         // Hashed set of targetable types
-        HashSet<Type> _targetableTypes = new HashSet<Type>(new [] {
+        HashSet<Type> _targetableTypes = new HashSet<Type>(new[] {
             typeof(int), typeof(float), typeof(string),
             typeof(Vector2), typeof(Vector3), typeof(Vector4),
             typeof(Vector2Int), typeof(Vector3Int)
