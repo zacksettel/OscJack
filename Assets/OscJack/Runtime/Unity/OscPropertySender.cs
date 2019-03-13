@@ -12,6 +12,7 @@ namespace OscJack
     {
         #region Editable fields
 
+        [SerializeField] string _txSymbol = "default";
         [SerializeField] string _ipAddress = "127.0.0.1";
         [SerializeField] int _udpPort = 9000;
         [SerializeField] string _oscAddress = "/unity";
