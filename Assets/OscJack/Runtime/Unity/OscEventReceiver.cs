@@ -36,7 +36,8 @@ namespace OscJack
 
         #region Editable fields
 
-        [SerializeField] int _udpPort = 9000;
+        [SerializeField] string _portSymbol = "default";
+        [SerializeField] int _udpPort = 0;  // unassigned
         [SerializeField] string _oscAddress = "/unity";
         [SerializeField] DataType _dataType;
 
@@ -129,6 +130,19 @@ namespace OscJack
 
         void OnEnable()
         {
+            if (OscRXmap.allPortMaps != null)
+            {
+                foreach (OscRXmap.PortMap pm in OscRXmap.allPortMaps)
+                {
+                    if (_portSymbol == pm.portSymbol)
+                    {
+                        _udpPort = pm.portNumber;
+
+                        break;
+                    }
+                }
+            }
+
             if (string.IsNullOrEmpty(_oscAddress))
             {
                 _currentAddress = null;

@@ -29,6 +29,19 @@ namespace OscJack
 
         void UpdateSettings()
         {
+            if (OscTXmap.allTXmaps != null)
+            {
+                foreach (OscTXmap.TXmap tm in OscTXmap.allTXmaps)
+                {
+                    if (_txSymbol == tm.txSymbol)
+                    {
+                        _udpPort = tm.portNumber;
+                        _ipAddress = tm.address;
+                        break;
+                    }
+                }
+            }
+
             _client = OscMaster.GetSharedClient(_ipAddress, _udpPort);
 
             if (_dataSource != null && !string.IsNullOrEmpty(_propertyName))
