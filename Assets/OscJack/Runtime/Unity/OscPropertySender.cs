@@ -10,6 +10,8 @@ namespace OscJack
     [AddComponentMenu("OSC/Property Sender")]
     public sealed class OscPropertySender : MonoBehaviour
     {
+        public static bool OSXtxMute = false;
+
         #region Editable fields
 
         [SerializeField] string _txSymbol = "default";
@@ -56,6 +58,8 @@ namespace OscJack
 
         void Start()
         {
+            if (_oscAddress == string.Empty)
+                _oscAddress = "/" + transform.name + "/"+ _propertyName;
             UpdateSettings();
         }
 
@@ -89,6 +93,7 @@ namespace OscJack
 
         public void Send(int data)
         {
+            if (OSXtxMute) return;
             if (!_keepSending && data == _intValue) return;
             _client.Send(_oscAddress, data);
             _intValue = data;
@@ -98,6 +103,7 @@ namespace OscJack
 
         public void Send(float data)
         {
+            if (OSXtxMute) return;
             if (!_keepSending && data == _floatValue) return;
             _client.Send(_oscAddress, data);
             _floatValue = data;
@@ -107,6 +113,7 @@ namespace OscJack
 
         public void Send(Vector2 data)
         {
+            if (OSXtxMute) return;
             if (!_keepSending && data == _vector2Value) return;
             _client.Send(_oscAddress, data.x, data.y);
             _vector2Value = data;
@@ -116,6 +123,7 @@ namespace OscJack
 
         public void Send(Vector3 data)
         {
+            if (OSXtxMute) return;
             if (!_keepSending && data == _vector3Value) return;
             _client.Send(_oscAddress, data.x, data.y, data.z);
             _vector3Value = data;
@@ -125,6 +133,7 @@ namespace OscJack
 
         public void Send(Vector4 data)
         {
+            if (OSXtxMute) return;
             if (!_keepSending && data == _vector4Value) return;
             _client.Send(_oscAddress, data.x, data.y, data.z, data.w);
             _vector4Value = data;
@@ -134,6 +143,7 @@ namespace OscJack
 
         public void Send(Vector2Int data)
         {
+            if (OSXtxMute) return;
             if (!_keepSending && data == _vector2IntValue) return;
             _client.Send(_oscAddress, data.x, data.y);
             _vector2IntValue = data;
@@ -143,6 +153,7 @@ namespace OscJack
 
         public void Send(Vector3Int data)
         {
+            if (OSXtxMute) return;
             if (!_keepSending && data == _vector3IntValue) return;
             _client.Send(_oscAddress, data.x, data.y, data.z);
             _vector3IntValue = data;
@@ -152,6 +163,7 @@ namespace OscJack
 
         public void Send(string data)
         {
+            if (OSXtxMute) return;
             if (!_keepSending && data == _stringValue) return;
             _client.Send(_oscAddress, data);
             _stringValue = data;
