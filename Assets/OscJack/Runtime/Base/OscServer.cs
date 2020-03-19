@@ -5,6 +5,8 @@
 #define OSC_SERVER_LIST
 #endif
 
+using UnityEngine;
+
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -13,13 +15,20 @@ using System.Threading;
 #if OSC_SERVER_LIST
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-[assembly:System.Runtime.CompilerServices.InternalsVisibleTo("jp.keijiro.osc-jack.Editor")] 
+[assembly:System.Runtime.CompilerServices.InternalsVisibleTo("jp.keijiro.osc-jack.Editor")]
 #endif
+
+
 
 namespace OscJack
 {
+    //[ExecuteInEditMode]
     public sealed class OscServer : IDisposable
     {
+
+        [SerializeField]
+        private int targetPort;
+
         #region Public Properties And Methods
 
         public OscMessageDispatcher MessageDispatcher {
@@ -28,6 +37,8 @@ namespace OscJack
 
         public OscServer(int listenPort)
         {
+            targetPort = listenPort;
+
             _dispatcher = new OscMessageDispatcher();
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
@@ -36,14 +47,38 @@ namespace OscJack
             // Therefore, we heve to set timeout to break ServerLoop.
             _socket.ReceiveTimeout = 100;
 
-            _socket.Bind(new IPEndPoint(IPAddress.Any, listenPort));
+            _socket.Bind(new IPEndPoint(IPAddress.Any, targetPort));
 
             _thread = new Thread(ServerLoop);
             _thread.Start();
 
-            #if OSC_SERVER_LIST
+#if OSC_SERVER_LIST
             _servers.Add(this);
-            #endif
+#endif
+            //Debug.Log("******************** OscServer  Socket state: " + (_socket == null));
+        }
+
+        void socketSetup()
+        {
+            if (_socket != null) return;
+
+            _dispatcher = new OscMessageDispatcher();
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+            // On some platforms, it's not possible to cancel Receive() by
+            // just calling Close() -- it'll block the thread forever!
+            // Therefore, we heve to set timeout to break ServerLoop.
+            _socket.ReceiveTimeout = 100;
+
+            _socket.Bind(new IPEndPoint(IPAddress.Any, targetPort));
+
+            _thread = new Thread(ServerLoop);
+            _thread.Start();
+
+#if OSC_SERVER_LIST
+            _servers.Add(this);
+#endif
+            Debug.Log("********************** OscServer.socketSetup() Socket state: " + (_socket == null));
         }
 
         public void Dispose()
@@ -121,11 +156,15 @@ namespace OscJack
 
         void ServerLoop()
         {
+
+
             var parser = new OscPacketParser(_dispatcher);
-            var buffer = new byte[4096];
+            var buffer = new byte[16384];  // zk WAS 4096.  Increased the size had to avoid buffer overrunn with longer OSC JSON strings. 
 
             while (!_disposed)
             {
+                socketSetup();
+
                 try
                 {
                     int dataRead = _socket.Receive(buffer);
