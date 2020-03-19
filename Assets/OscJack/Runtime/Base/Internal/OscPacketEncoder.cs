@@ -2,9 +2,11 @@
 // https://github.com/keijiro/OscJack
 
 using System;
+using UnityEngine;
 
 namespace OscJack
 {
+    //[ExecuteInEditMode]
     internal sealed class OscPacketEncoder
     {
         public Byte[] Buffer { get { return _buffer; } }
