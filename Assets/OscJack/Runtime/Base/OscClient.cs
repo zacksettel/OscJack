@@ -5,6 +5,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace OscJack
 {
@@ -156,6 +157,21 @@ namespace OscJack
             if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
         }
 
+        //public void Send(string address, float element1, float element2, float element3, float element4, float element5, float element6)
+        //{
+        //    clientSetup();
+        //    _encoder.Clear();
+        //    _encoder.Append(address);
+        //    _encoder.Append(",ffffff");
+        //    _encoder.Append(element1);
+        //    _encoder.Append(element2);
+        //    _encoder.Append(element3);
+        //    _encoder.Append(element4);
+        //    _encoder.Append(element5);
+        //    _encoder.Append(element6);
+        //    if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        //}
+
         public void Send(string address, string data)
         {
             clientSetup();
@@ -165,6 +181,177 @@ namespace OscJack
             _encoder.Append(data);
             if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
         }
+
+        public void Send(string address, string data1, string data2)
+        {
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+            _encoder.Append(",ss");
+            _encoder.Append(data1);
+            _encoder.Append(data2);
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
+        public void Send(string address, string data1, string data2, string data3)
+        {
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+            _encoder.Append(",sss");
+            _encoder.Append(data1);
+            _encoder.Append(data2);
+            _encoder.Append(data3);
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
+        public void Send(string address, string data1, string data2, float data3)
+        {
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+            _encoder.Append(",ssf");
+            _encoder.Append(data1);
+            _encoder.Append(data2);
+            _encoder.Append(data3);
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
+        public void Send(string address, string str, float data1)
+        {
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+            _encoder.Append(",sf");
+            _encoder.Append(str);
+            _encoder.Append(data1);
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
+        public void Send(string address, string str, float data1, float data2)
+        {
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+            _encoder.Append(",sff");
+            _encoder.Append(str);
+            _encoder.Append(data1);
+            _encoder.Append(data2);
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
+
+        public void Send(string address, string str, float data1, float data2, float data3)
+        {
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+            _encoder.Append(",sfff");
+            _encoder.Append(str);
+            _encoder.Append(data1);
+            _encoder.Append(data2);
+            _encoder.Append(data3);
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
+        // optimized for update messages up to 7 floats long
+        public void Send(string address, string name, float[] floatVec)
+        {
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+
+            switch (floatVec.Length)
+            {
+                case 5:
+                    _encoder.Append(",sfffff");
+                    break;
+                case 6:
+                _encoder.Append(",sffffff");
+                    break;
+                case 7:
+                    _encoder.Append(",sfffffff");
+                    break;
+                case 3:
+                    _encoder.Append(",sfff");
+                    break;
+                case 2:
+                    _encoder.Append(",sff");
+                    break;
+                case 1:
+                    _encoder.Append(",sf");
+                    break;
+                case 4:
+                    _encoder.Append(",sffff");
+                    break;
+
+                default:
+                    return;  // do not handle vectors longer than 7 elements
+            }
+
+            _encoder.Append(name);
+
+            foreach (float value in floatVec)
+            {
+                _encoder.Append(value);
+            }
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
+        public void Send(string address, List<object> data)
+        {
+            if (data.Count == 0)
+            {
+                Send(address);
+                return;
+            }
+
+            List<char> formatList = new List<char>();
+            string formatStr;
+            formatList.Add(',');
+
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+
+            // calculate format string
+            foreach (object obj in data)
+            {
+                Type t = obj.GetType();
+
+                if (t.Equals(typeof(int)))
+                    formatList.Add('i');
+                else if (t.Equals(typeof(float)))
+                    formatList.Add('f');
+                if (t.Equals(typeof(double)))
+                    formatList.Add('f');
+                else if (t.Equals(typeof(string)))
+                    formatList.Add('s');
+            }
+
+            formatStr = new string(formatList.ToArray());
+
+            _encoder.Append(formatStr);
+
+            foreach (object obj in data)
+            {
+                Type t = obj.GetType();
+
+                if (t.Equals(typeof(int)))
+                    _encoder.Append((int)obj);
+
+                else if (t.Equals(typeof(float)))
+                    _encoder.Append((float)obj);
+
+                if (t.Equals(typeof(double)))
+                    _encoder.Append((float)obj);
+
+                else if (t.Equals(typeof(string)))
+                    _encoder.Append((string)obj);
+            }
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
 
         #endregion
 
@@ -202,5 +389,14 @@ namespace OscJack
         Socket _socket;
 
         #endregion
+        #region public functions
+        public bool isConnected()
+        {
+            if (_socket == null) return false;
+            else return _socket.Connected;
+        }
+
+        #endregion
+
     }
 }

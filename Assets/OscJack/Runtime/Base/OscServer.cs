@@ -192,5 +192,15 @@ namespace OscJack
         }
 
         #endregion
+
+        #region public functions
+        public bool isConnected()
+        {
+            if (_socket == null) return false;
+            if (_socket.IsBound)
+                return true;
+            else return false;
+        }
+        #endregion
     }
 }
