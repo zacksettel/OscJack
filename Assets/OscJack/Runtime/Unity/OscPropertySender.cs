@@ -18,15 +18,15 @@ namespace OscJack
         [SerializeField] string _ipAddress = "127.0.0.1";
         [SerializeField] int _udpPort = 9000;
         [SerializeField] string _oscAddress = "/unity";
-        [SerializeField] Component _dataSource;
-        [SerializeField] string _propertyName;
-        [SerializeField] bool _keepSending;
+		[SerializeField] Component _dataSource = null;
+		[SerializeField] string _propertyName = "";
+		[SerializeField] bool _keepSending = false;
 
-        #endregion
+		#endregion
 
-        #region Internal members
+		#region Internal members
 
-        OscClient _client;
+		OscClient _client;
         PropertyInfo _propertyInfo;
 
         void UpdateSettings()
