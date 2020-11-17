@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465934, g: 0.49642956, b: 0.5748249, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.49641287, b: 0.5748173, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 480630548}
   - component: {fileID: 480630547}
   - component: {fileID: 480630546}
+  - component: {fileID: 480630551}
   m_Layer: 0
   m_Name: Cube2
   m_TagString: Untagged
@@ -234,6 +235,60 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &480630551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 480630545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f8f979447c54247bcba0d5441e6081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _portSymbol: default
+  _udpPort: 7777
+  _oscAddress: /Cube2/position
+  _dataType: 5
+  _event:
+    m_PersistentCalls:
+      m_Calls: []
+  _intEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _floatEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _vector2Event:
+    m_PersistentCalls:
+      m_Calls: []
+  _vector3Event:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 480630550}
+        m_MethodName: set_position
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _vector4Event:
+    m_PersistentCalls:
+      m_Calls: []
+  _vector2IntEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _vector3IntEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _stringEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &766216431
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,6 +477,7 @@ GameObject:
   - component: {fileID: 1995187224}
   - component: {fileID: 1995187223}
   - component: {fileID: 1995187227}
+  - component: {fileID: 1995187228}
   m_Layer: 0
   m_Name: Sphere1
   m_TagString: Untagged
@@ -598,3 +654,22 @@ MonoBehaviour:
   _stringEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1995187228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995187222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e43cc78b62f2184d8bebe41bd574f9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _txSymbol: default
+  _ipAddress: 127.0.0.1
+  _udpPort: 8888
+  _oscAddress: /Sphere1/position
+  _dataSource: {fileID: 1995187226}
+  _propertyName: position
+  _keepSending: 0
