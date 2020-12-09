@@ -298,6 +298,50 @@ namespace OscJack
             if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
         }
 
+        // optimized for setvec messages up to 7 floats long
+        public void Send(string address, string name, string paramName, float[] floatVec)
+        {
+            clientSetup();
+            _encoder.Clear();
+            _encoder.Append(address);
+
+            switch (floatVec.Length)
+            {
+                case 5:
+                    _encoder.Append(",ssfffff");
+                    break;
+                case 6:
+                    _encoder.Append(",ssffffff");
+                    break;
+                case 7:
+                    _encoder.Append(",ssfffffff");
+                    break;
+                case 3:
+                    _encoder.Append(",ssfff");
+                    break;
+                case 2:
+                    _encoder.Append(",ssff");
+                    break;
+                case 1:
+                    _encoder.Append(",ssf");
+                    break;
+                case 4:
+                    _encoder.Append(",ssffff");
+                    break;
+
+                default:
+                    return;  // do not handle vectors longer than 7 elements
+            }
+
+            _encoder.Append(name);
+            _encoder.Append(paramName);
+            foreach (float value in floatVec)
+            {
+                _encoder.Append(value);
+            }
+            if (_socket.Connected) _socket.Send(_encoder.Buffer, _encoder.Length, SocketFlags.None);
+        }
+
         public void Send(string address, List<object> data)
         {
             if (data.Count == 0)
