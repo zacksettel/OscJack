@@ -159,7 +159,7 @@ namespace OscJack
 
 
             var parser = new OscPacketParser(_dispatcher);
-            var buffer = new byte[16384];  // zk WAS 4096.  Increased the size had to avoid buffer overrunn with longer OSC JSON strings. 
+            var buffer = new byte[32768];  // zk WAS 4096.  Increased the size had to avoid buffer overrunn with longer OSC JSON strings. 
 
             while (!_disposed)
             {
